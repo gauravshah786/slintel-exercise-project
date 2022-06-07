@@ -11,7 +11,11 @@ const PrivateRoute = ({ children } : PrivateRouteProps ) => {
   // Save entire state to localStorage?
   // const { isAuthenticated } = useSelector(userSelector);
   // Should check here for valid token
-  const isAuthenticated = localStorage.getItem('isAuthenticated') || false;
+  const isAuth = localStorage.getItem('isAuthenticated') || '';
+  let isAuthenticated = false;
+  if(isAuth !== ''){
+    isAuthenticated = JSON.parse(isAuth);
+  }
   console.log(isAuthenticated, 'in Private Route');
 
   if(!isAuthenticated){

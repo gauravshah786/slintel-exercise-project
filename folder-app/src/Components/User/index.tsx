@@ -1,7 +1,10 @@
-// import { Button } from 'antd';
+import { Button } from 'antd';
 import React from 'react';
 import styled from 'styled-components';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { clearState } from '../../redux/userSlice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
 
 const StyledContainer = styled.div`
   align-items: center;
@@ -12,22 +15,24 @@ const StyledContainer = styled.div`
 
 // TODO: have to handle token expiration automatically
 const User = () => {
-  // const navigate = useNavigate();
-  // const handleClick = () => {
-  //   localStorage.clear();
-  //   navigate('/login');
-  // };
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const handleClick = () => {
+    localStorage.clear();
+    dispatch(clearState());
+    navigate('/login', { replace: true });
+  };
 
   return (
     <StyledContainer>
       <div>User info here</div>
       <div>
-        Logout here
-        {/* <Button 
+        {/* Logout here */}
+        <Button 
           shape='round' 
           onClick={handleClick}>
           Logout
-        </Button> */}
+        </Button>
       </div>
     </StyledContainer>
   )
