@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import User from '../User';
 
 const HeaderContainer = styled.div`
   display: grid;
@@ -17,17 +18,11 @@ const Filter = styled.div`
   align-items: center;
 `;
 
-const User = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 const AppHeader = () => (
   <HeaderContainer>
     <Logo>Logo here</Logo>
     <Filter>Search here</Filter>
-    <User>User info here</User>
+    <User />
   </HeaderContainer>
 );
 
