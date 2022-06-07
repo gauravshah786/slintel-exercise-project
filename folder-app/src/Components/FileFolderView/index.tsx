@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,12 +7,22 @@ import {
   updateSelectedItem
 } from '../../redux/appSlice';
 import GridView from '../GridView';
-import { GRID_VIEW } from '../../constants';
 import ListView from '../ListView';
 import Loading from '../Loading';
+import { View } from '../../redux/appSlice';
+import { Document } from '../../types';
+import { AppDispatch } from '../../redux/store';
+
+export interface ViewProps {
+  files: Array<Document>,
+  folders: Array<Document>,
+  handleFileClick: (e: React.MouseEvent<HTMLElement>) => void,
+  handleFolderClick: (e: React.MouseEvent<HTMLElement>) => void,
+  selected: Document | null
+};
 
 const FileFolderView = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const {
     files,
     folders,
@@ -21,7 +32,7 @@ const FileFolderView = () => {
   } = useSelector(appSelector);
   const navigate = useNavigate();
 
-  const handleFolderClick = (e) => {
+  const handleFolderClick = (e: React.MouseEvent<HTMLElement>) => {
     const id = e.currentTarget.id;
     const item = folders.find(folder => folder.name === id);
     switch (e.detail) {
@@ -30,7 +41,7 @@ const FileFolderView = () => {
         break;
       case 2:
         dispatch(updateSelectedItem(null));
-        const to = `/folder/${item.id}`;
+        const to = item ? `/folder/${item.id}` : '/';
         // TODO: check libraries to maintain state on routing
         localStorage.setItem('currentFolder', JSON.stringify(item));
         navigate(to);
@@ -40,7 +51,7 @@ const FileFolderView = () => {
     }
   }
 
-  const handleFileClick = (e) => {
+  const handleFileClick = (e: React.MouseEvent<HTMLElement>) => {
     const id = e.currentTarget.id;
     console.log(id);
     const item = files.find(file => file.name === id);
@@ -53,7 +64,7 @@ const FileFolderView = () => {
     }
   
     // get view from store
-    if(view === GRID_VIEW){
+    if(view === View.grid_view){
       return (
         <GridView
           files={files}

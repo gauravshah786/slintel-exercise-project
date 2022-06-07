@@ -11,3 +11,7 @@ const store = configureStore({
 });
 
 export default store;
+
+// TODO: create hooks instead of using AppDispatch as type everywhere
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

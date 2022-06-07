@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 // pass as prop
@@ -5,7 +6,7 @@ import { setNewDocumentName } from '../../redux/appSlice';
 
 const CreateDocumentModalContent = () => {
   const dispatch = useDispatch();
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     console.log('in create folder modal', value);
     dispatch(setNewDocumentName(value));

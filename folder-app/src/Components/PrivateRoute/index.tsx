@@ -1,6 +1,11 @@
 import { Navigate, useLocation } from 'react-router-dom';
+import React, { ReactElement } from 'react';
 
-const PrivateRoute = ({ children }) => {
+interface PrivateRouteProps {
+  children: ReactElement
+};
+
+const PrivateRoute = ({ children } : PrivateRouteProps ) => {
   const location = useLocation();
   // TODO: replace causes refresh which clears redux store
   // Save entire state to localStorage?

@@ -1,8 +1,11 @@
+import React from 'react';
 import { faFile, faFolder } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 
-const DocumentContainer = styled.div`
+import { DocumentContainerProps, DocumentProps } from './types';
+
+const DocumentContainer = styled.div<DocumentContainerProps>`
   background-color: ${props => props.isSelected ? 'deepskyblue': ''};
   border: 1px solid grey;
   cursor: pointer;
@@ -29,9 +32,8 @@ const Icon = styled.div`
   justify-content: center;
 `;
 
-const Document = (props) => {
+const Document = (props: DocumentProps) => {
   const { name, isSelected, handleClick, isFolder } = props;
-
   return (
     <DocumentContainer id={name} isSelected={isSelected} onClick={handleClick}>
       <Icon>

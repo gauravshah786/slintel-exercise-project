@@ -1,8 +1,11 @@
-import axios from 'axios'; 
+import axios from 'axios';
+
+import { AddDocumentParams, FetchContentsParams, RenameDocumentParams } from '../types';
+import { Credentials } from '../types/userTypes';
 
 const SIGNIN_URL = '/api/login';
 
-export const signIn = async (credentials) => {
+export const signIn = async (credentials: Credentials) => {
   console.log('in signIn auth', credentials);
   const response = await axios.post(SIGNIN_URL, credentials);
   console.log('in signIn service', response);
@@ -17,7 +20,7 @@ export const signIn = async (credentials) => {
 
 const DOCUMENT_URL = '/api/document';
 
-export const fetchContentsAPI = async (params) => {
+export const fetchContentsAPI = async (params: FetchContentsParams) => {
   console.log('in fetch content', params);
   const { token, documentId } = params;
 
@@ -32,14 +35,14 @@ export const fetchContentsAPI = async (params) => {
   return response.data;
 };
 
-export const addDocumentAPI = async (document) => {
+export const addDocumentAPI = async (document: AddDocumentParams) => {
   console.log('in add document', document);
   const response = await axios.post(DOCUMENT_URL, document);
   console.log('in add service', response);
   return response.data;
 };
 
-export const deleteDocumentAPI = async (params) => {
+export const deleteDocumentAPI = async (params: FetchContentsParams) => {
   console.log('in delete document', params);
   const { token, documentId } = params;
 
@@ -54,7 +57,7 @@ export const deleteDocumentAPI = async (params) => {
   return response.data;
 };
 
-export const renameDocumentAPI = async (document) => {
+export const renameDocumentAPI = async (document: RenameDocumentParams) => {
   console.log('in rename document', document);
   const response = await axios.patch(DOCUMENT_URL, document);
   console.log('in rename service', response);

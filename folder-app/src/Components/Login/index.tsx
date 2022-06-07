@@ -1,9 +1,11 @@
+import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 // import { useLocation, useNavigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+import type { AppDispatch } from '../../redux/store';
 import { signInUser, userSelector } from '../../redux/userSlice';
 import { USERNAME, PASSWORD } from '../../constants';
 
@@ -40,14 +42,18 @@ const ButtonContainer = styled.div`
   justify-content: center; */
 `
 
-const Status = styled.div`
+interface StatusProps {
+  isFetching: boolean;
+}
+
+const Status = styled.div<StatusProps>`
   display: ${props => props.isFetching ? 'block': 'none'};
 `;
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   // const location = useLocation();
   const navigate = useNavigate();
   const { isError, isFetching, isSuccess, errorMessage } = useSelector(userSelector);
@@ -58,18 +64,18 @@ const Login = () => {
     dispatch(signInUser({username, password}));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(username, password);
     // validation checks for inputs
     login();
   };
 
-  const updateUsername = (e) => {
+  const updateUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
 
-  const updatePassword = (e) => {
+  const updatePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
 

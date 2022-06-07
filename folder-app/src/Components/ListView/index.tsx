@@ -1,6 +1,8 @@
+import React from 'react';
 import styled from 'styled-components';
 
 import Document from '../Document';
+import { ViewProps } from '../FileFolderView';
 
 const ListViewContainer = styled.div`
   display: flex;
@@ -16,7 +18,7 @@ const ItemContainer = styled.div`
 // const FileContainer = styled.div`
 // `;
 
-const ListView = (props) => {
+const ListView = (props: ViewProps) => {
   const {files, folders, handleFileClick, handleFolderClick, selected} = props;
   return (
     <ListViewContainer>
@@ -24,11 +26,10 @@ const ListView = (props) => {
           folders.map(folder => 
             <ItemContainer key={folder.name}>
               <Document
-                isSelected={selected === folder.name}
+                isSelected={selected?.name === folder.name}
                 name={folder.name}
                 handleClick={handleFolderClick}
-                isFolder={true}>
-              </Document>
+                isFolder={true} />
             </ItemContainer>
           )
         }
@@ -36,11 +37,10 @@ const ListView = (props) => {
           files.map(file => 
             <ItemContainer key={file.name}>
               <Document
-                isSelected={selected === file.name}
+                isSelected={selected?.name === file.name}
                 name={file.name}
                 handleClick={handleFileClick}
-                isFolder={false}>
-              </Document>
+                isFolder={false} />
             </ItemContainer>
           )
         }

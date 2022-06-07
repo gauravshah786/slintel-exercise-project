@@ -1,7 +1,14 @@
 // TODO: remove antd dependency
 import { Modal } from 'antd';
+import React from 'react';
 
-const CustomModal = (props) => {
+import { ModalConfig } from '../PageHeader';
+
+interface CustomModalProps {
+  config: ModalConfig
+}
+
+const CustomModal = (props: CustomModalProps) => {
   const { config } = props;
   console.log(config);
   return ( 

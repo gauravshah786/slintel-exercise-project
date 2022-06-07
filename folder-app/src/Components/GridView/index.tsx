@@ -1,6 +1,8 @@
+import React from 'react';
 import styled from 'styled-components';
 
 import Document from '../Document';
+import { ViewProps } from '../FileFolderView';
 
 const Container = styled.div`
   display: flex;
@@ -12,7 +14,7 @@ const Label = styled.div`
 
 `;
 
-const GridView = (props) => {
+const GridView = (props: ViewProps) => {
   const {files, folders, handleFileClick, handleFolderClick, selected} = props;
   return (
     <div>
@@ -22,11 +24,10 @@ const GridView = (props) => {
           folders.map(folder => 
             <Document
               key={folder.name} 
-              isSelected={selected && selected.name === folder.name}
+              isSelected={selected?.name === folder.name}
               name={folder.name}
               handleClick={handleFolderClick}
-              isFolder={true}>
-            </Document>
+              isFolder={true} />
           )
         }
       </Container>
@@ -37,11 +38,10 @@ const GridView = (props) => {
           files.map(file => 
             <Document
               key={file.name} 
-              isSelected={selected && selected.name === file.name}
+              isSelected={selected?.name === file.name}
               name={file.name}
               handleClick={handleFileClick}
-              isFolder={false}>
-            </Document>
+              isFolder={false} />
           )
         }
       </Container>

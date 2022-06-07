@@ -1,11 +1,12 @@
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { setUpdatedDocumentName } from '../../redux/appSlice';
 
-// pass action as prop
-const CreateFolderModalContent = (props) => {
+// TODO: pass action as prop
+const CreateFolderModalContent = () => {
   const dispatch = useDispatch();
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     dispatch(setUpdatedDocumentName(value));
   };

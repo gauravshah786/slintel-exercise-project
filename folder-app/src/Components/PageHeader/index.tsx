@@ -2,6 +2,7 @@
 import { Button } from 'antd';
 import { faGrip, faList } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -20,8 +21,10 @@ import {
 import CustomModal from '../Modal';
 import CreateDocumentModalContent from './CreateDocumentModalContent';
 import DeleteDocumentModalContent from './DeleteDocumentModalContent';
-import { GRID_VIEW, LIST_VIEW } from '../../constants';
 import RenameDocumentModalContent from './RenameDocumentModalContent';
+import { View } from '../../redux/appSlice';
+import { AppDispatch, RootState } from '../../redux/store';
+import { AddDocumentParams, Document } from '../../types';
 
 const Header = styled.div`
   border-bottom: 1px blue solid;
@@ -46,9 +49,9 @@ const FaIconContainer = styled.div`
   cursor: pointer;
 `;
 
-function createBodyObject(token, name, currentFolder, isFolder) {
-  const parentFullPath = currentFolder.fullPath || '';
-  const parentId = currentFolder.id || '';
+function createBodyObject(token: string, name: string, currentFolder: Document | undefined, isFolder: boolean) {
+  const parentFullPath = currentFolder?.fullPath || '';
+  const parentId = currentFolder?.id || '';
   return {
     isFolder,
     name,
@@ -58,13 +61,21 @@ function createBodyObject(token, name, currentFolder, isFolder) {
   }
 };
 
+export interface ModalConfig {
+  content: ReactNode,
+  handleCancel: () => void,
+  handleOk: () => void,  
+  okText: string,
+  title: string,
+};
+
 // TODO: create own modal and remove antd modal to pass params from modal to parent
 // will be able to reuse functions and reduce code
 const PageHeader = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   // id represents folder id from url
   const { id: documentId} = useParams();
-  const [modalConfig, setModalConfig] = useState(null);
+  const [modalConfig, setModalConfig] = useState<ModalConfig | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const { selectedItem, view } = useSelector(appSelector);
   const store = useStore();
@@ -75,23 +86,24 @@ const PageHeader = () => {
   };
 
   const isSelectedItemEmpty = () => !selectedItem;
-  const isSelectedItemFolder = () => selectedItem.isFolder;
+  const isSelectedItemFolder = () => selectedItem?.isFolder || false;
   
   const toggleView = () => dispatch(
-    updateView(view === GRID_VIEW ? LIST_VIEW : GRID_VIEW)
+    updateView(view === View.grid_view ? View.list_view : View.grid_view)
   );
 
   const createDocument = (isFolder = false) => {
-    const token = localStorage.getItem('token');
-    let currentFolder = {};
+    const token = localStorage.getItem('token') || '';
+    let currentFolder;
     const localStorageCurrentFolder = localStorage.getItem('currentFolder');
     console.log(localStorageCurrentFolder);
     if(localStorageCurrentFolder){
       currentFolder = JSON.parse(localStorageCurrentFolder);
     }
-    const { app } = store.getState();
+    const { app } = store.getState() as RootState;
     console.log(currentFolder, app.folders, documentId);
-    const body = createBodyObject(token, app.newDocumentName, currentFolder, isFolder);
+    const name = app.newDocumentName || '';
+    const body: AddDocumentParams = createBodyObject(token, name, currentFolder, isFolder);
     console.log(body);
     dispatch(addDocument(body));
     dispatch(setNewDocumentName(''));
@@ -109,8 +121,9 @@ const PageHeader = () => {
   };
 
   const handleDeleteOk = () => {
-    const token = localStorage.getItem('token');
-    const deleteBody = { documentId: selectedItem.id, token };
+    const token = localStorage.getItem('token') || '';
+    const id = selectedItem?.id || '';
+    const deleteBody = { documentId: id, token };
     dispatch(deleteDocument(deleteBody));
     dispatch(updateSelectedItem(null));
     closeModal();
@@ -123,9 +136,10 @@ const PageHeader = () => {
   };
 
   const handleRenameOk = () => {
-    const { app } = store.getState();
+    const { app } = store.getState() as RootState;
     const newName = app.updatedDocumentName;
-    dispatch(renameFolder({from: selectedItem.name, to: newName}));
+    const from = selectedItem?.name || ''
+    dispatch(renameFolder({from, to: newName}));
     dispatch(setUpdatedDocumentName(''));
     dispatch(updateSelectedItem(null));
     closeModal();
@@ -190,19 +204,19 @@ const PageHeader = () => {
     content: <RenameDocumentModalContent/>
   };
   
-  const showCreateModal = (isFolder) => {
+  const showCreateModal = (isFolder: boolean) => {
     const config = isFolder ? createFolderConfig : createFileConfig;
     setModalConfig(() => config);
     setIsOpen(true);
   };
 
-  const showDeleteModal = (isFolder) => {
+  const showDeleteModal = (isFolder: boolean) => {
     const config = isFolder ? deleteFolderConfig : deleteFileConfig;
     setModalConfig(() => config);
     setIsOpen(true);
   };
 
-  const showRenameModal = (isFolder) => {
+  const showRenameModal = (isFolder: boolean) => {
     const config = isFolder ? renameFolderConfig : renameFileConfig;
     setModalConfig(() => config);
     setIsOpen(true);
@@ -248,13 +262,13 @@ const PageHeader = () => {
       </ButtonContainer>
       <ViewContainer>
         <FaIconContainer onClick={toggleView}>
-          <FontAwesomeIcon icon={view === GRID_VIEW ? faList : faGrip} />
+          <FontAwesomeIcon icon={view === View.grid_view ? faList : faGrip} />
         </FaIconContainer>
       </ViewContainer>
       
       {/* Modal is getting re-rendered on input changes for new folder/rename */}
       {
-        isOpen && <CustomModal config={modalConfig} />
+        isOpen && modalConfig && <CustomModal config={modalConfig} />
       }
     </Header>
   );
