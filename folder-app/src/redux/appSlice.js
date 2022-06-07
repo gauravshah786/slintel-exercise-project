@@ -48,9 +48,9 @@ export const addDocument = createAsyncThunk(
 
 export const deleteDocument = createAsyncThunk(
   '/deleteDocument',
-  async (document, thunkAPI) => {
+  async (reqBody, thunkAPI) => {
     try {
-      const response = await deleteDocumentAPI(document);
+      const response = await deleteDocumentAPI(reqBody);
       return response.data;
     } catch(error) {
       console.log('Error', error);
@@ -116,6 +116,12 @@ const appSlice = createSlice({
         updatedDocumentName: action.payload
       }
     },
+    setCurrentPath(state, action){
+      return {
+        ...state,
+        currentPath: action.payload
+      }
+    }
   },
   extraReducers: {
     [fetchContents.fulfilled]: (state, { payload }) => {
@@ -214,6 +220,7 @@ const appSlice = createSlice({
 
 export const {
   renameFolder,
+  setCurrentPath,
   setNewDocumentName,
   setUpdatedDocumentName,
   updateSelectedItem,

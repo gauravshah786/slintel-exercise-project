@@ -127,33 +127,39 @@ const renameDocument = async (req, res) => {
 };
 
 app.patch('/api/document/:id', verifyToken, renameDocument);
-app.patch('/api/document', verifyToken, renameDocument);
 
 const deleteDocument = async (req, res) => {
   // TODO: use regex to find all docs which contain current folder fullPath
   // and delete them
   try {
     const { userId } = req.user;
-    const { name, parentFullPath, parentId, isFolder, id } = req.body;
-    const fullPath = `${parentFullPath}/${name}`;
-    let doc;
+    const id = req.params.id;
+    const queryOptions = { _id: id };
+    const document = await Document.findOne(queryOptions, columnsToGet).lean();
+    const { fullPath, isFolder } = document;
+    // storing response in case we want to use it
+    const updateResponse = await Document.updateOne(queryOptions, { isDeleted: true });
     if(isFolder){
       // regex to set isDeleted
       // 1. id - self delete
-      // 2. path includes fullpath
-    } else {
-      doc = await Document.updateOne({ _id: id }, { isDeleted: true });
-      console.log(doc);
+      // 2. path includes fullpath - deletes subFolders and files
+      const regex = new RegExp(fullPath, 'i');
+      console.log(regex);
+      const query = { 
+        fullPath: { $regex: regex },
+        userId
+      };
+      // storing response in case we want to use it
+      const updateManyRes = await Document.updateMany(query, { isDeleted: true });
     }
-    return res.status(200).json({ data: { document: doc } });
+    
+    return res.status(200).json({ data: { success: 'ok', document } });
   } catch (error) {
     return res.status(500).json({ errorMessage: error });
   }
 };
 
 app.delete('/api/document/:id', verifyToken, deleteDocument);
-app.delete('/api/document', verifyToken, deleteDocument);
-
 
 // const createFile = async (req, res) => {
 //   // TODO: check if required params are sent else throw error

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { 
   appSelector,
-  updateSelectedItem 
+  updateSelectedItem
 } from '../../redux/appSlice';
 import GridView from '../GridView';
 import { GRID_VIEW } from '../../constants';
@@ -24,15 +24,15 @@ const FileFolderView = () => {
   const handleFolderClick = (e) => {
     const id = e.currentTarget.id;
     const item = folders.find(folder => folder.name === id);
-    console.log(item, 'in folder click');
     switch (e.detail) {
       case 1:
         dispatch(updateSelectedItem(item));
         break;
       case 2:
-        console.log('double click');
         dispatch(updateSelectedItem(null));
         const to = `/folder/${item.id}`;
+        // TODO: check libraries to maintain state on routing
+        localStorage.setItem('currentFolder', JSON.stringify(item));
         navigate(to);
         break;
       default:
@@ -41,8 +41,6 @@ const FileFolderView = () => {
   }
 
   const handleFileClick = (e) => {
-    // currentTarget should be object
-    // check currentTarget
     const id = e.currentTarget.id;
     console.log(id);
     const item = files.find(file => file.name === id);

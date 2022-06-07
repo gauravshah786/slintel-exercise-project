@@ -22,8 +22,6 @@ export const fetchContentsAPI = async (params) => {
   const { token, documentId } = params;
 
   const url = documentId !== undefined ? `${DOCUMENT_URL}/${documentId}` : DOCUMENT_URL;
-  console.log(url);
-  console.log(`${DOCUMENT_URL}/${documentId}`);
   const options = {
     'headers': {
       'Authorization': `token ${token}`
@@ -41,9 +39,17 @@ export const addDocumentAPI = async (document) => {
   return response.data;
 };
 
-export const deleteDocumentAPI = async (document) => {
-  console.log('in delete document', document);
-  const response = await axios.delete(DOCUMENT_URL, document);
+export const deleteDocumentAPI = async (params) => {
+  console.log('in delete document', params);
+  const { token, documentId } = params;
+
+  const url = `${DOCUMENT_URL}/${documentId}`;
+  const options = {
+    'headers': {
+      'Authorization': `token ${token}`
+    }
+  };
+  const response = await axios.delete(url, options);
   console.log('in delete service', response);
   return response.data;
 };

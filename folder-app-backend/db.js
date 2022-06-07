@@ -17,6 +17,7 @@ exports.initDB = callback => {
   mongoose.connect(url, connectionParams)
     .then(client => {
       _db = client;
+      // mongoose.set('debug', true);
       callback(null, _db);
     })
     .catch(err => {

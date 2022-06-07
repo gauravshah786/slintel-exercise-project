@@ -12,17 +12,16 @@ const Body = styled.div``;
 
 const Page = () => {
   const dispatch = useDispatch();
-  // id represents folder id from url
-  const { id: folderId} = useParams();
+  // id represents document id from url
+  const { id: documentId} = useParams();
   // TODO: replace from store, replace from react router causes refresh
   const token = localStorage.getItem('token');
-  console.log(token, folderId);
 
   useEffect(() => {
     // fetch Data for a specific user id and folder id
     // infinite loading will need page and offset limit
-    dispatch(fetchContents({folderId, token}));
-  }, [dispatch, folderId, token]);
+    dispatch(fetchContents({ token, documentId }));
+  }, [dispatch, documentId, token]);
 
   console.log('rendered Page');
   return (

@@ -10,4 +10,5 @@ Use Cookie based authentication \
 Add MySQL and Sequelize based APIs. Currently MongoDB and Mongoose is used. \
 Add infinite scrolling \
 Add Typescript \
-Add better CSS
+Add better CSS \
+Connect redux and react router to maintain state on navigation or write to localStorage. React router v5 had connection libraries. Have to check for v6 -> Currently, routing resets the state and browsing back wont work because of no sync between navigation and save store

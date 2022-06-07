@@ -58,16 +58,12 @@ function createBodyObject(token, name, currentFolder, isFolder) {
   }
 };
 
-function getCurrentFolder(folders, id){
-  return !!id ? folders.find(folder => folder.parentId === id) : {};
-};
-
 // TODO: create own modal and remove antd modal to pass params from modal to parent
 // will be able to reuse functions and reduce code
 const PageHeader = () => {
   const dispatch = useDispatch();
   // id represents folder id from url
-  const { id: folderId} = useParams();
+  const { id: documentId} = useParams();
   const [modalConfig, setModalConfig] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const { selectedItem, view } = useSelector(appSelector);
@@ -87,9 +83,16 @@ const PageHeader = () => {
 
   const createDocument = (isFolder = false) => {
     const token = localStorage.getItem('token');
+    let currentFolder = {};
+    const localStorageCurrentFolder = localStorage.getItem('currentFolder');
+    console.log(localStorageCurrentFolder);
+    if(localStorageCurrentFolder){
+      currentFolder = JSON.parse(localStorageCurrentFolder);
+    }
     const { app } = store.getState();
-    const currentFolder = getCurrentFolder(app.folders, folderId);
+    console.log(currentFolder, app.folders, documentId);
     const body = createBodyObject(token, app.newDocumentName, currentFolder, isFolder);
+    console.log(body);
     dispatch(addDocument(body));
     dispatch(setNewDocumentName(''));
     closeModal();
@@ -106,7 +109,9 @@ const PageHeader = () => {
   };
 
   const handleDeleteOk = () => {
-    dispatch(deleteDocument(selectedItem));
+    const token = localStorage.getItem('token');
+    const deleteBody = { documentId: selectedItem.id, token };
+    dispatch(deleteDocument(deleteBody));
     dispatch(updateSelectedItem(null));
     closeModal();
     // console.log('folder deleted');
